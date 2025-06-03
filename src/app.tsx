@@ -1,14 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Share2,
-  RotateCcw,
-  RefreshCw,
-  TrendingUp,
-  ChartArea,
-  Info,
-  X,
-  XCircle,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Share2, TrendingUp, X } from "lucide-react";
 
 // Item database - starting with 20 items as specified in MVP
 const ITEMS_DATABASE = [
@@ -184,7 +175,7 @@ interface Item {
 }
 
 export default function WheatleGame() {
-  const [wheatPrice, setWheatPrice] = useState(() => {
+  const [wheatPrice] = useState(() => {
     // Use a different fallback price each day if API fails
     const dayIndex = new Date().getDate() % FALLBACK_WHEAT_PRICES.length;
     return FALLBACK_WHEAT_PRICES[dayIndex] ?? 5.89;
@@ -234,23 +225,6 @@ export default function WheatleGame() {
       }
     }
   }, []);
-
-  const resetGame = () => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(6, 0, 0, 0); // 6 AM CT
-
-    const timeUntilReset = tomorrow.getTime() - today.getTime();
-    const hours = Math.floor(timeUntilReset / (1000 * 60 * 60));
-    const minutes = Math.floor(
-      (timeUntilReset % (1000 * 60 * 60)) / (1000 * 60)
-    );
-
-    alert(
-      `New Wheatle in ${hours}h ${minutes}m\n\nCome back tomorrow at 6 AM CT for a new challenge!`
-    );
-  };
 
   const calculateAccuracy = (guessValue: number, actualValue: number) => {
     const percentOff = Math.abs((guessValue - actualValue) / actualValue) * 100;
