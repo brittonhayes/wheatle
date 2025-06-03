@@ -588,7 +588,7 @@ export default function WheatleGame() {
             {gameComplete && (
               <div className="border-t pt-4">
                 <div className="text-center mb-4">
-                  <div className="text-sm text-gray-600 mb-2">Next Wheatle</div>
+                  <div className="text-sm text-gray-600 mb-2">Next Game</div>
                   <div className="text-lg font-bold text-gray-800">
                     6:00 AM CT
                   </div>
