@@ -388,14 +388,14 @@ export default function WheatleGame() {
             <div key={i} className="grid grid-cols-1 gap-2 mb-2">
               <div
                 className={`
-                w-full h-16 border-2 ${guess.accuracy.borderColor} ${guess.accuracy.color}
+                w-full h-12 border-2 ${guess.accuracy.borderColor} ${guess.accuracy.color}
                 flex items-center justify-center text-gray-800 font-bold text-lg
                 rounded transition-all duration-500 transform scale-100
               `}
               >
                 <div className="text-center">
-                  <div className="text-xl">{guess.accuracy.emoji}</div>
-                  <div className="text-sm">{guess.value.toFixed(2)}</div>
+                  <div className="text-lg">{guess.accuracy.emoji}</div>
+                  <div className="text-xs">{guess.value.toFixed(2)}</div>
                 </div>
               </div>
             </div>
