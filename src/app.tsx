@@ -355,7 +355,7 @@ export default function WheatleGame() {
     const emojiGrid = guesses.map((g) => g.accuracy.emoji).join("");
     const gameResult = `The Price Is Wheat #${gameNumber} ${
       gameWon ? guesses.length : "X"
-    }/6\n\n${emojiGrid}\n\nwheatle.game`;
+    }/6\n\n${emojiGrid}`;
 
     navigator.clipboard
       .writeText(gameResult)
