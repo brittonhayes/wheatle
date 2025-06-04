@@ -1,152 +1,9 @@
 import { useState, useEffect } from "react";
 import { Share2, TrendingUp, X } from "lucide-react";
+import ITEMS_DATABASE from "./data/items";
 
-// Item database - starting with 20 items as specified in MVP
-const ITEMS_DATABASE = [
-  {
-    id: "starbucks_latte",
-    name: "Starbucks Grande Latte",
-    emoji: "☕",
-    price: 5.25,
-    category: "household",
-  },
-  {
-    id: "diesel_gallon",
-    name: "Diesel Fuel (1 gallon)",
-    emoji: "⛽",
-    price: 3.89,
-    category: "farm",
-  },
-  {
-    id: "milk_gallon",
-    name: "Gallon of Milk",
-    emoji: "🥛",
-    price: 4.29,
-    category: "household",
-  },
-  {
-    id: "seed_corn_bag",
-    name: "Seed Corn (80k kernels)",
-    emoji: "🌽",
-    price: 285.0,
-    category: "farm",
-  },
-  {
-    id: "netflix_month",
-    name: "Netflix Subscription",
-    emoji: "📺",
-    price: 15.49,
-    category: "household",
-  },
-  {
-    id: "hydraulic_hose",
-    name: "Hydraulic Hose (10ft)",
-    emoji: "🔧",
-    price: 45.99,
-    category: "farm",
-  },
-  {
-    id: "bread_loaf",
-    name: "Loaf of Bread",
-    emoji: "🍞",
-    price: 3.49,
-    category: "household",
-  },
-  {
-    id: "mcdonalds_meal",
-    name: "McDonald's Big Mac Meal",
-    emoji: "🍔",
-    price: 11.99,
-    category: "household",
-  },
-  {
-    id: "fertilizer_ton",
-    name: "Urea Fertilizer (per ton)",
-    emoji: "🌱",
-    price: 485.0,
-    category: "farm",
-  },
-  {
-    id: "ribeye_steak",
-    name: "Ribeye Steak (1 lb)",
-    emoji: "🥩",
-    price: 14.99,
-    category: "household",
-  },
-  {
-    id: "tractor_tire",
-    name: "Tractor Tire (Front)",
-    emoji: "🚜",
-    price: 1250.0,
-    category: "farm",
-  },
-  {
-    id: "gas_fillup",
-    name: "Gas Tank Fill-up (15 gal)",
-    emoji: "⛽",
-    price: 52.35,
-    category: "household",
-  },
-  {
-    id: "crop_insurance",
-    name: "Crop Insurance (per acre)",
-    emoji: "📋",
-    price: 28.5,
-    category: "farm",
-  },
-  {
-    id: "coffee_beans",
-    name: "Coffee Beans (2 lbs)",
-    emoji: "☕",
-    price: 18.99,
-    category: "household",
-  },
-  {
-    id: "grain_elevator_fee",
-    name: "Grain Elevator Fee",
-    emoji: "🏭",
-    price: 125.0,
-    category: "farm",
-  },
-  {
-    id: "pizza_large",
-    name: "Large Pizza (Casey's)",
-    emoji: "🍕",
-    price: 16.99,
-    category: "household",
-  },
-  {
-    id: "oil_change",
-    name: "Tractor Oil Change",
-    emoji: "🛢️",
-    price: 185.0,
-    category: "farm",
-  },
-  {
-    id: "eggs_dozen",
-    name: "Dozen Eggs",
-    emoji: "🥚",
-    price: 4.89,
-    category: "household",
-  },
-  {
-    id: "herbicide_gallon",
-    name: "Roundup (1 gallon)",
-    emoji: "🌿",
-    price: 32.99,
-    category: "farm",
-  },
-  {
-    id: "chicken_dinner",
-    name: "Rotisserie Chicken",
-    emoji: "🍗",
-    price: 7.99,
-    category: "household",
-  },
-];
-
-// Mock wheat price - in production this would come from Alpha Vantage
-const FALLBACK_WHEAT_PRICES = [5.89, 5.75, 6.12, 5.95, 6.03]; // Historical prices for fallback
+// Fallback wheat prices in case API fails
+const FALLBACK_WHEAT_PRICES = [5.89, 5.75, 6.12, 5.95, 6.03];
 
 interface Guess {
   value: number;
@@ -174,12 +31,45 @@ interface Item {
   category: string;
 }
 
-export default function WheatleGame() {
-  const [wheatPrice] = useState(() => {
-    // Use a different fallback price each day if API fails
+interface WheatFuturesResponse {
+  data: Array<{
+    date: string;
+    value: string;
+  }>;
+  unit: string;
+  name: string;
+}
+
+// Function to fetch wheat price from API
+async function fetchWheatPrice(): Promise<number> {
+  try {
+    const response = await fetch("/.netlify/functions/pullWheatFutures");
+
+    if (!response.ok) {
+      throw new Error(`API responded with status: ${response.status}`);
+    }
+
+    const data: WheatFuturesResponse = await response.json();
+
+    // Extract the most recent wheat price from the API response
+    if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+      const mostRecentPrice = data.data[0]?.value;
+      if (mostRecentPrice && !isNaN(parseFloat(mostRecentPrice))) {
+        return parseFloat(mostRecentPrice);
+      }
+    }
+
+    throw new Error("Invalid API response format");
+  } catch (error) {
+    console.error("Failed to fetch wheat price from API:", error);
+    // Use fallback price based on current day
     const dayIndex = new Date().getDate() % FALLBACK_WHEAT_PRICES.length;
     return FALLBACK_WHEAT_PRICES[dayIndex] ?? 5.89;
-  });
+  }
+}
+
+export default function WheatleGame() {
+  const [wheatPrice, setWheatPrice] = useState<number | null>(null);
   const [gameNumber, setGameNumber] = useState(1);
   const [todaysItem, setTodaysItem] = useState<Item | null>(null);
   const [guess, setGuess] = useState("");
@@ -188,6 +78,7 @@ export default function WheatleGame() {
   const [gameWon, setGameWon] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [isLoadingPrice, setIsLoadingPrice] = useState(true);
   const [stats, setStats] = useState<Stats>(() => {
     const saved = localStorage.getItem("wheatle-stats");
     return saved
@@ -212,6 +103,19 @@ export default function WheatleGame() {
     // Select item based on date seed
     const itemIndex = daysSince % ITEMS_DATABASE.length;
     setTodaysItem(ITEMS_DATABASE[itemIndex] ?? null);
+
+    // Fetch wheat price from API
+    const loadWheatPrice = async () => {
+      setIsLoadingPrice(true);
+      try {
+        const price = await fetchWheatPrice();
+        setWheatPrice(price);
+      } finally {
+        setIsLoadingPrice(false);
+      }
+    };
+
+    loadWheatPrice();
 
     // Check if already played today
     const lastPlayed = localStorage.getItem("wheatle-last-played");
@@ -417,10 +321,15 @@ export default function WheatleGame() {
     return rows;
   };
 
-  if (!todaysItem)
+  if (!todaysItem || wheatPrice === null || isLoadingPrice)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">
+            {isLoadingPrice ? "Loading wheat prices..." : "Loading game..."}
+          </p>
+        </div>
       </div>
     );
 
