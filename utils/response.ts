@@ -1,3 +1,5 @@
+import { WheatFuturesResponse } from "../types";
+
 export const createErrorResponse = (message: string, status: number = 500) => {
   return new Response(JSON.stringify({ error: message }), {
     status,
@@ -5,7 +7,7 @@ export const createErrorResponse = (message: string, status: number = 500) => {
   });
 };
 
-export const createSuccessResponse = (data: any) => {
+export const createSuccessResponse = (data: WheatFuturesResponse) => {
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {

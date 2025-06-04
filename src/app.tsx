@@ -622,8 +622,12 @@ https://thepriceiswheat.netlify.app`;
                   💡 Daily Game
                 </p>
                 <p className="text-amber-700 text-xs">
-                  New game daily at 6:00 AM CT with fresh items and wheat
+                  New game daily at 5:00 AM PST with fresh items and wheat
                   prices!
+                </p>
+                <p className="text-amber-700 text-xs mt-1">
+                  Wheat prices are based on this month's real commodity price,
+                  converted to dollars per bushel for the game.
                 </p>
               </div>
             </div>
@@ -692,7 +696,7 @@ https://thepriceiswheat.netlify.app`;
                 <div className="text-center mb-4">
                   <div className="text-sm text-gray-600 mb-2">Next Game</div>
                   <div className="text-lg font-bold text-gray-800">
-                    6:00 AM CT
+                    5:00 AM PST
                   </div>
                 </div>
                 <button
