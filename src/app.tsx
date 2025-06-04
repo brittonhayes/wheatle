@@ -283,7 +283,10 @@ export default function WheatleGame() {
   // Create empty rows for the grid (like Wordle)
   const createGameGrid = () => {
     const rows = [];
-    for (let i = 0; i < 6; i++) {
+    // Only show slots up to current guess + 1 (for input), or all if game is complete
+    const slotsToShow = gameComplete ? 6 : Math.min(6, guesses.length + 1);
+
+    for (let i = 0; i < slotsToShow; i++) {
       if (i < guesses.length) {
         // Filled row with guess
         const guess = guesses[i];
@@ -305,14 +308,21 @@ export default function WheatleGame() {
             </div>
           );
         }
-      } else {
-        // Empty row
+      } else if (i === guesses.length && !gameComplete) {
+        // Current input row
         rows.push(
           <div key={i} className="grid grid-cols-1 gap-2 mb-2">
-            <div className="w-full h-14 border-2 border-gray-200 flex items-center justify-center rounded">
-              <div className="text-gray-400 text-sm">
-                {i === guesses.length && !gameComplete ? "Next guess..." : ""}
-              </div>
+            <div className="w-full h-14 border-2 border-amber-500 bg-amber-50 flex items-center justify-center rounded shadow-sm">
+              <input
+                type="number"
+                step="0.1"
+                placeholder="Enter bushels..."
+                value={guess}
+                onChange={(e) => setGuess(e.target.value)}
+                onKeyUp={(e) => e.key === "Enter" && handleGuess()}
+                className="w-full h-full text-lg text-center bg-transparent border-none outline-none placeholder-gray-500 font-semibold"
+                autoFocus
+              />
             </div>
           </div>
         );
@@ -378,31 +388,20 @@ export default function WheatleGame() {
           <div className="max-w-sm mx-auto mb-6">{createGameGrid()}</div>
 
           {/* Input Interface - Only show if game not complete */}
-          {!gameComplete && (
-            <div className="max-w-xs mx-auto">
-              <div className="flex gap-2 mb-4">
-                <input
-                  type="number"
-                  step="0.1"
-                  placeholder="0.0"
-                  value={guess}
-                  onChange={(e) => setGuess(e.target.value)}
-                  onKeyUp={(e) => e.key === "Enter" && handleGuess()}
-                  className="flex-1 px-4 py-3 text-lg text-center border-2 border-gray-300 rounded-md focus:outline-none focus:border-amber-500 transition-colors"
-                  disabled={guesses.length >= 6}
-                />
-                <button
-                  onClick={handleGuess}
-                  disabled={guesses.length >= 6 || !guess}
-                  className="px-6 py-3 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 disabled:bg-gray-300 transition-colors"
-                >
-                  ENTER
-                </button>
+          {!gameComplete && guesses.length < 6 && (
+            <div className="text-center mb-6">
+              <button
+                onClick={handleGuess}
+                disabled={!guess || guess.trim() === ""}
+                className="px-8 py-2 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors mb-3"
+              >
+                SUBMIT
+              </button>
+              <div className="text-gray-500 text-sm mb-2">
+                {guesses.length}/6 guesses
               </div>
-              <div className="text-center">
-                <span className="text-gray-500 text-sm">
-                  {guesses.length}/6 guesses
-                </span>
+              <div className="text-xs text-gray-400">
+                Type your guess above and press Enter or Submit
               </div>
             </div>
           )}
@@ -414,12 +413,14 @@ export default function WheatleGame() {
                 <h3 className="text-2xl font-bold mb-2 text-gray-800">
                   {gameWon ? "🎉 Well done!" : "😔 Better luck tomorrow!"}
                 </h3>
-                <div className="text-lg text-gray-700 mb-2">
-                  The answer was{" "}
-                  <span className="font-bold text-amber-600">
-                    {getActualBushels().toFixed(2)} bushels
-                  </span>
-                </div>
+                {gameWon && (
+                  <div className="text-lg text-gray-700 mb-2">
+                    The answer was{" "}
+                    <span className="font-bold text-amber-600">
+                      {getActualBushels().toFixed(2)} bushels
+                    </span>
+                  </div>
+                )}
                 <div className="text-sm text-gray-500">
                   The Price Is Wheat #{gameNumber} •{" "}
                   {gameWon ? guesses.length : "X"}/6
