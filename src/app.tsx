@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Share2,
-  TrendingUp,
-  X,
-  ChevronUp,
-  ChevronDown,
-  ArrowUp,
-  ArrowDown,
-  Info,
-} from "lucide-react";
+import { Share2, TrendingUp, X, ArrowUp, ArrowDown, Info } from "lucide-react";
 import ITEMS_DATABASE from "./data/items";
 
 // Fallback wheat prices in case API fails
@@ -574,20 +565,21 @@ https://thepriceiswheat.netlify.app`;
               <div>
                 <p className="font-semibold mb-2">🎯 Objective</p>
                 <p>
-                  Guess how many bushels of wheat you could buy with the price
-                  of today's item!
+                  Guess how many bushels of wheat you would have to sell to
+                  purchase today's item!
                 </p>
               </div>
 
               <div>
                 <p className="font-semibold mb-2">🎮 How to Play</p>
-                <ul className="space-y-1 ml-4">
-                  <li>• You'll see an item and its current price</li>
+                <ul className="space-y-1 list-disc list-outside ml-6">
+                  <li>You'll see an item and its current price</li>
                   <li>
-                    • Guess how many bushels of wheat that price could buy
+                    Guess how many bushels of wheat you would have to sell to
+                    purchase today's item
                   </li>
-                  <li>• You have 6 attempts to get it right</li>
-                  <li>• Each guess gives you a hint about how close you are</li>
+                  <li>You have 6 attempts to get it right</li>
+                  <li>Each guess gives you a hint about how close you are</li>
                 </ul>
               </div>
 
