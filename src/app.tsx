@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Share2, TrendingUp, X } from "lucide-react";
+import {
+  Share2,
+  TrendingUp,
+  X,
+  ChevronUp,
+  ChevronDown,
+  ArrowUp,
+  ArrowDown,
+  Info,
+} from "lucide-react";
 import ITEMS_DATABASE from "./data/items";
 
 // Fallback wheat prices in case API fails
@@ -12,6 +21,7 @@ interface Guess {
     label: string;
     color: string;
     borderColor: string;
+    direction: "higher" | "lower" | "exact";
   };
   timestamp: string;
 }
@@ -40,9 +50,24 @@ interface WheatFuturesResponse {
   name: string;
 }
 
-// Function to fetch wheat price from API
+// Function to fetch wheat price from API with caching
 async function fetchWheatPrice(): Promise<number> {
+  const CACHE_KEY = "wheatle-wheat-price-cache";
+  const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
   try {
+    // Check cache first
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const { price, timestamp } = JSON.parse(cached);
+      const now = Date.now();
+
+      // If cache is less than 24 hours old, use cached price
+      if (now - timestamp < CACHE_DURATION) {
+        return price;
+      }
+    }
+
     const response = await fetch("/.netlify/functions/pullWheatFutures");
 
     if (!response.ok) {
@@ -55,7 +80,18 @@ async function fetchWheatPrice(): Promise<number> {
     if (data.data && Array.isArray(data.data) && data.data.length > 0) {
       const mostRecentPrice = data.data[0]?.value;
       if (mostRecentPrice && !isNaN(parseFloat(mostRecentPrice))) {
-        return parseFloat(mostRecentPrice);
+        const price = parseFloat(mostRecentPrice);
+
+        // Cache the price with timestamp
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            price,
+            timestamp: Date.now(),
+          })
+        );
+
+        return price;
       }
     }
 
@@ -77,8 +113,10 @@ export default function WheatleGame() {
   const [gameComplete, setGameComplete] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [isLoadingPrice, setIsLoadingPrice] = useState(true);
+  const [showAnswer, setShowAnswer] = useState(false);
   const [stats, setStats] = useState<Stats>(() => {
     const saved = localStorage.getItem("wheatle-stats");
     return saved
@@ -130,34 +168,54 @@ export default function WheatleGame() {
     }
   }, []);
 
-  const calculateAccuracy = (guessValue: number, actualValue: number) => {
+  const calculateAccuracy = (
+    guessValue: number,
+    actualValue: number
+  ): {
+    emoji: string;
+    label: string;
+    color: string;
+    borderColor: string;
+    direction: "higher" | "lower" | "exact";
+  } => {
     const percentOff = Math.abs((guessValue - actualValue) / actualValue) * 100;
-    if (percentOff <= 5)
+    const direction: "higher" | "lower" | "exact" =
+      guessValue < actualValue
+        ? "higher"
+        : guessValue > actualValue
+        ? "lower"
+        : "exact";
+
+    if (percentOff <= 10)
       return {
         emoji: "🎯",
         label: "Exact",
         color: "bg-green-100",
         borderColor: "border-green-400",
+        direction,
       };
-    if (percentOff <= 15)
+    if (percentOff <= 25)
       return {
         emoji: "🌾",
         label: "Close",
         color: "bg-yellow-100",
         borderColor: "border-yellow-400",
+        direction,
       };
-    if (percentOff <= 30)
+    if (percentOff <= 50)
       return {
         emoji: "🌱",
         label: "Warm",
         color: "bg-orange-100",
         borderColor: "border-orange-400",
+        direction,
       };
     return {
       emoji: "❄️",
       label: "Cold",
-      color: "bg-gray-100",
-      borderColor: "border-gray-400",
+      color: "bg-blue-100",
+      borderColor: "border-blue-400",
+      direction,
     };
   };
 
@@ -259,7 +317,11 @@ export default function WheatleGame() {
     const emojiGrid = guesses.map((g) => g.accuracy.emoji).join("");
     const gameResult = `The Price Is Wheat #${gameNumber} ${
       gameWon ? guesses.length : "X"
-    }/6\n\n${emojiGrid}`;
+    }/6
+
+${emojiGrid}
+
+https://thepriceiswheat.netlify.app`;
 
     navigator.clipboard
       .writeText(gameResult)
@@ -295,9 +357,9 @@ export default function WheatleGame() {
             <div key={i} className="grid grid-cols-1 gap-2 mb-2">
               <div
                 className={`
-                w-full h-18 border-2 ${guess.accuracy.borderColor} ${guess.accuracy.color}
+                w-full h-18 border ${guess.accuracy.borderColor} ${guess.accuracy.color}
                 flex items-center justify-center text-gray-800 font-bold text-lg
-                rounded transition-all duration-500 transform scale-100
+                rounded transition-all duration-250 ease-in-out transform scale-100
               `}
               >
                 <div className="text-center">
@@ -305,7 +367,15 @@ export default function WheatleGame() {
                   <div className="text-sm font-medium text-gray-600">
                     {guess.accuracy.label}
                   </div>
-                  <div className="text-sm">{guess.value.toFixed(2)}</div>
+                  <div className="text-sm flex items-center justify-center gap-1 pl-2">
+                    {guess.value.toFixed(2)}
+                    {guess.accuracy.direction !== "exact" &&
+                      (guess.accuracy.direction === "higher" ? (
+                        <ArrowUp className="w-4 h-4 text-gray-600" />
+                      ) : (
+                        <ArrowDown className="w-4 h-4 text-gray-600" />
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -315,16 +385,15 @@ export default function WheatleGame() {
         // Current input row
         rows.push(
           <div key={i} className="grid grid-cols-1 gap-2 mb-2">
-            <div className="w-full h-14 border-2 border-amber-500 bg-amber-50 flex items-center justify-center rounded shadow-sm">
+            <div className="w-full h-14 border-2 border-gray-200 mt-5 bg-white flex items-center justify-center rounded shadow-sm">
               <input
                 type="number"
-                step="0.1"
-                placeholder="Enter bushels..."
+                step="0.01"
+                placeholder="How many bushels of wheat?"
                 value={guess}
                 onChange={(e) => setGuess(e.target.value)}
                 onKeyUp={(e) => e.key === "Enter" && handleGuess()}
-                className="w-full h-full text-lg text-center bg-transparent border-none outline-none placeholder-gray-500 font-semibold"
-                autoFocus
+                className="w-full h-full text-lg text-center bg-transparent border-none px-4 outline-none placeholder-gray-600"
               />
             </div>
           </div>
@@ -348,11 +417,18 @@ export default function WheatleGame() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg">
+      <div className="w-full max-w-md bg-white rounded-lg flex-grow flex flex-col">
         {/* Header - Wordle style */}
         <header className="border-b border-gray-200 ">
           <div className="flex items-center justify-between">
-            <div></div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowHowToPlay(true)}
+                className="p-2 hover:bg-gray-100 rounded"
+              >
+                <Info className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
             <h1 className="text-3xl font-bold text-gray-800 tracking-wide text-center">
               THE PRICE IS WHEAT
             </h1>
@@ -368,31 +444,31 @@ export default function WheatleGame() {
         </header>
 
         {/* Game Content */}
-        <main className="px-4 py-6">
-          {/* Item Display - Compact like Wordle */}
+        <main className="px-4 py-6 flex-grow">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-3 bg-amber-50 px-6 py-3 rounded-lg border border-amber-200">
-              <span className="text-3xl">{todaysItem.emoji}</span>
-              <div className="text-left">
+            <div className="inline-flex text-center items-center gap-3 px-6 py-3 rounded-lg">
+              <div className="text-center">
                 <div className="font-semibold text-gray-800 text-sm">
                   {todaysItem.name}
                 </div>
+                <span className="text-3xl">{todaysItem.emoji}</span>
                 <div className="text-2xl font-bold text-green-600">
                   ${todaysItem.price.toFixed(2)}
                 </div>
               </div>
             </div>
-            <p className="text-gray-600 mt-2 text-sm">
-              How many bushels of wheat?
-            </p>
+            <p className="text-gray-600 mt-2 text-sm"></p>
           </div>
 
           {/* Game Grid - Wordle style */}
-          <div className="max-w-sm mx-auto mb-6">{createGameGrid()}</div>
+          <div className="max-w-sm mx-auto mb-4">{createGameGrid()}</div>
 
           {/* Input Interface - Only show if game not complete */}
           {!gameComplete && guesses.length < 6 && (
-            <div className="text-center mb-6">
+            <div className="text-center">
+              <div className="text-xs text-gray-400 mt-0 mb-4">
+                Type your guess above and press Enter or Submit
+              </div>
               <button
                 onClick={handleGuess}
                 disabled={!guess || guess.trim() === ""}
@@ -403,16 +479,13 @@ export default function WheatleGame() {
               <div className="text-gray-500 text-sm mb-2">
                 {guesses.length}/6 guesses
               </div>
-              <div className="text-xs text-gray-400">
-                Type your guess above and press Enter or Submit
-              </div>
             </div>
           )}
 
           {/* Results - Wordle style */}
           {gameComplete && (
             <div className="text-center space-y-4 mt-8">
-              <div className="bg-gray-100 rounded-lg p-6">
+              <div className="rounded-lg p-6">
                 <h3 className="text-2xl font-bold mb-2 text-gray-800">
                   {gameWon ? "🎉 Well done!" : "😔 Better luck tomorrow!"}
                 </h3>
@@ -422,6 +495,25 @@ export default function WheatleGame() {
                     <span className="font-bold text-amber-600">
                       {getActualBushels().toFixed(2)} bushels
                     </span>
+                  </div>
+                )}
+                {!gameWon && (
+                  <div className="mb-4">
+                    {!showAnswer ? (
+                      <button
+                        onClick={() => setShowAnswer(true)}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors text-sm"
+                      >
+                        🔍 Reveal Answer
+                      </button>
+                    ) : (
+                      <div className="text-lg text-gray-700">
+                        The answer was{" "}
+                        <span className="font-bold text-amber-600">
+                          {getActualBushels().toFixed(2)} bushels
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
                 <div className="text-sm text-gray-500">
@@ -449,7 +541,114 @@ export default function WheatleGame() {
             </div>
           )}
         </main>
+
+        {/* Footer */}
+        <footer className="mt-16 text-center text-xs text-gray-400">
+          made with 🌾 by{" "}
+          <a
+            href="https://bsky.app/profile/brittonhayes.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-600 hover:text-amber-500"
+          >
+            @brittonhayes.dev
+          </a>
+        </footer>
       </div>
+
+      {/* How to Play Modal */}
+      {showHowToPlay && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800">How to Play</h2>
+              <button
+                onClick={() => setShowHowToPlay(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-sm text-gray-700">
+              <div>
+                <p className="font-semibold mb-2">🎯 Objective</p>
+                <p>
+                  Guess how many bushels of wheat you could buy with the price
+                  of today's item!
+                </p>
+              </div>
+
+              <div>
+                <p className="font-semibold mb-2">🎮 How to Play</p>
+                <ul className="space-y-1 ml-4">
+                  <li>• You'll see an item and its current price</li>
+                  <li>
+                    • Guess how many bushels of wheat that price could buy
+                  </li>
+                  <li>• You have 6 attempts to get it right</li>
+                  <li>• Each guess gives you a hint about how close you are</li>
+                </ul>
+              </div>
+
+              <div>
+                <p className="font-semibold mb-2">📊 Feedback</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🎯</span>
+                    <span>
+                      <strong>Exact:</strong> Within 10% of the answer
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🌾</span>
+                    <span>
+                      <strong>Close:</strong> Within 25% of the answer
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🌱</span>
+                    <span>
+                      <strong>Warm:</strong> Within 50% of the answer
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">❄️</span>
+                    <span>
+                      <strong>Cold:</strong> More than 50% off
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p className="font-semibold mb-2">🔄 Arrows</p>
+                <p>
+                  Arrows show whether the actual answer is higher ⬆️ or lower ⬇️
+                  than your guess.
+                </p>
+              </div>
+
+              <div className="bg-amber-50 p-3 rounded-lg">
+                <p className="font-semibold text-amber-800 mb-1">💡 Pro Tip</p>
+                <p className="text-amber-700">
+                  A new game starts every day at 6:00 AM CT with a fresh item
+                  and updated wheat prices!
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={() => setShowHowToPlay(false)}
+                className="w-full py-3 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 transition-colors"
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Statistics Modal - Wordle style */}
       {showStats && (
