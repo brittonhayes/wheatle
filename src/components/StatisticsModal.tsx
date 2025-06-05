@@ -1,18 +1,12 @@
 import { X } from 'lucide-react'
-
-interface Stats {
-  played: number
-  won: number
-  currentStreak: number
-  bestStreak: number
-}
+import { Stats } from '../types'
 
 interface StatisticsModalProps {
   stats: Stats
   gameComplete: boolean
   onClose: () => void
   onShareResults: () => void
-  onResetStats: () => void
+  onResetHistory: () => void
 }
 
 export function StatisticsModal({
@@ -20,7 +14,7 @@ export function StatisticsModal({
   gameComplete,
   onClose,
   onShareResults,
-  onResetStats
+  onResetHistory: onResetStats
 }: StatisticsModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">

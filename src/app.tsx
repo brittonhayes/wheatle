@@ -28,7 +28,7 @@ import {
   isGameComplete,
   isGameWon
 } from './lib'
-import { GAME_CONFIG } from './config'
+import { GAME_CONFIG, GUESS_ACCURACY_LEVELS } from './config'
 
 export default function WheatleGame() {
   const [wheatPrice, setWheatPrice] = useState<number | undefined>(undefined)
@@ -64,8 +64,6 @@ export default function WheatleGame() {
     }
 
     loadWheatPrice()
-
-    // Check if already played today
     if (hasPlayedToday()) {
       const savedState = loadGameState()
       if (savedState) {
@@ -93,7 +91,11 @@ export default function WheatleGame() {
 
     const guessValue = validation.value!
     const actualBushels = getActualBushels(wheatPrice, todaysItem?.price)
-    const guessAccuracy = calculateAccuracy(guessValue, actualBushels)
+    const guessAccuracy = calculateAccuracy(
+      guessValue,
+      actualBushels,
+      GUESS_ACCURACY_LEVELS
+    )
 
     const newGuess: Guess = {
       value: guessValue,
@@ -113,7 +115,6 @@ export default function WheatleGame() {
       setGameWon(won)
       handleGameComplete(won)
       saveGameState(newGuesses, complete, won)
-      setTimeout(() => setShowStats(true), 1500)
     }
   }
 
@@ -123,10 +124,10 @@ export default function WheatleGame() {
     saveStats(newStats)
   }
 
-  const handleResetStats = () => {
+  const handleResetHistory = () => {
     if (
       confirm(
-        'Are you sure you want to reset all statistics? This cannot be undone.'
+        'Are you sure you want to reset all game history? This cannot be undone.'
       )
     ) {
       const success = clearAllGameData()
@@ -136,9 +137,9 @@ export default function WheatleGame() {
         setGameComplete(false)
         setGameWon(false)
         setShowStats(false)
-        showToastMessage('Statistics have been reset!')
+        showToastMessage('Game history has been reset.')
       } else {
-        showToastMessage('Failed to reset statistics. Please try again.')
+        showToastMessage('Failed to reset game history. Please try again.')
       }
     }
   }
@@ -221,7 +222,7 @@ export default function WheatleGame() {
         </main>
 
         <footer className="mt-16 text-center text-xs text-gray-400">
-          made with 🌾 by{' '}
+          made with 🌾 by &nbsp;
           <a
             href="https://bsky.app/profile/brittonhayes.dev"
             target="_blank"
@@ -243,7 +244,7 @@ export default function WheatleGame() {
           gameComplete={gameComplete}
           onClose={() => setShowStats(false)}
           onShareResults={handleShareResults}
-          onResetStats={handleResetStats}
+          onResetHistory={handleResetHistory}
         />
       )}
 

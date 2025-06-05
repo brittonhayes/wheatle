@@ -1,4 +1,4 @@
-import { GAME_CONFIG, STORAGE_KEYS } from './config'
+import { GAME_CONFIG, ONE_DAY_IN_MILLISECONDS, STORAGE_KEYS } from './config'
 import {
   Accuracy,
   Guess,
@@ -6,47 +6,35 @@ import {
   Stats,
   Item,
   SavedGameState,
-  GameState
+  GameState,
+  AccuracyDirection,
+  GuessAccuracyLevels
 } from './types'
-
-const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000
 
 export const calculateAccuracy = (
   guessValue: number,
-  actualValue: number
+  actualValue: number,
+  guessAccuracyLevels: GuessAccuracyLevels
 ): Accuracy => {
   const percentOff = Math.abs((guessValue - actualValue) / actualValue) * 100
-  const direction: 'higher' | 'lower' | 'exact' =
+  const direction: AccuracyDirection =
     guessValue < actualValue
       ? 'higher'
       : guessValue > actualValue
         ? 'lower'
         : 'exact'
 
-  if (percentOff <= 10)
+  const level = Object.values(guessAccuracyLevels).find(
+    level => percentOff <= level.threshold
+  )
+
+  if (level) {
     return {
-      emoji: '🎯',
-      label: 'Exact',
-      color: 'bg-green-100',
-      borderColor: 'border-green-400',
+      ...level,
       direction
     }
-  if (percentOff <= 25)
-    return {
-      emoji: '🌾',
-      label: 'Close',
-      color: 'bg-yellow-100',
-      borderColor: 'border-yellow-400',
-      direction
-    }
-  if (percentOff <= 50)
-    return {
-      emoji: '🌱',
-      label: 'Warm',
-      color: 'bg-orange-100',
-      borderColor: 'border-orange-400',
-      direction
-    }
+  }
+
   return {
     emoji: '❄️',
     label: 'Cold',

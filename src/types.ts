@@ -36,8 +36,10 @@ export interface Accuracy {
   label: string
   color: string
   borderColor: string
-  direction: 'higher' | 'lower' | 'exact'
+  direction: AccuracyDirection
 }
+
+export type AccuracyDirection = 'higher' | 'lower' | 'exact'
 
 // Interfaces
 export interface GameState {
@@ -52,3 +54,14 @@ export interface SavedGameState {
   complete: boolean
   won: boolean
 }
+
+export type GuessAccuracyLevels = Record<
+  string,
+  {
+    threshold: number
+    emoji: string
+    label: string
+    color: string
+    borderColor: string
+  }
+>

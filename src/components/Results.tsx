@@ -1,4 +1,4 @@
-import { Share2, TrendingUp } from 'lucide-react'
+import { Copy, TrendingUp } from 'lucide-react'
 import { Guess } from '../types'
 
 interface ResultsProps {
@@ -47,7 +47,7 @@ export function Results({
               </button>
             ) : (
               <div className="text-lg text-gray-700">
-                The answer was{' '}
+                The answer was&nbsp;
                 <span className="font-bold text-amber-600">
                   {actualBushels.toFixed(2)} bushels
                 </span>
@@ -65,7 +65,7 @@ export function Results({
           onClick={onShareResults}
           className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition-colors"
         >
-          <Share2 className="w-4 h-4" />
+          <Copy className="w-4 h-4" />
           Share
         </button>
         <button
