@@ -1,17 +1,18 @@
-# Wheatle 🌾
+# The Price is Wheat 🌾
 
-A daily word game inspired by Wordle, but for wheat prices! Guess how many bushels of wheat you can buy with the price of everyday items.
+A daily guessing game where you estimate how many bushels of wheat you can buy with the price of everyday items. Inspired by Wordle, but with a twist on agricultural economics!
 
 ## 🎮 How to Play
 
-1. Each day, you'll see a different item with its current price
-2. Guess how many bushels of wheat you could buy for that price
-3. You have 6 attempts to get as close as possible
-4. Get feedback on how accurate your guess was:
-   - 🎯 **Exact!** - Within 5% of the actual answer
-   - 🔥 **Close!** - Within 15% of the actual answer
-   - 🌱 **Warm** - Within 30% of the actual answer
-   - 🌾 **Cold** - More than 30% off
+1. **Daily Item**: Each day features a different item with its current price
+2. **Make Your Guess**: Estimate how many bushels of wheat you could buy for that price
+3. **Get Feedback**: Receive accuracy feedback on your guess:
+   - 🎯 **Exact!** - Within 10% of the actual answer
+   - 🌾 **Close!** - Within 25% of the actual answer  
+   - 🌱 **Warm** - Within 50% of the actual answer
+   - ❄️ **Cold** - More than 50% off
+4. **Six Chances**: You have up to 6 attempts to get as close as possible
+5. **Share Results**: Share your daily performance with friends
 
 ## 🚀 Getting Started
 
@@ -35,13 +36,20 @@ cd wheatle
 npm install
 ```
 
-3. Start the development server:
+3. Set up environment variables for the Netlify function:
+
+```bash
+# Add to .env or Netlify environment
+ALPHA_VANTAGE_API_KEY=your_api_key_here
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+5. Open your browser and navigate to `http://localhost:3000`
 
 ### Building for Production
 
@@ -53,28 +61,35 @@ The built files will be in the `dist` directory.
 
 ## 🛠️ Tech Stack
 
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-- **Lucide React** - Icons
-- **LocalStorage** - Data persistence
+- **React 18** - UI framework with hooks
+- **TypeScript** - Type safety and better developer experience
+- **Vite** - Fast build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Beautiful icon library
+- **Netlify Functions** - Serverless API endpoints
+- **Alpha Vantage API** - Real-time wheat futures pricing
+- **LocalStorage** - Client-side game state persistence
 
 ## 📱 Features
 
-- **Daily Challenge**: New item every day
-- **Statistics Tracking**: Win rate, streaks, and game history
-- **Share Results**: Share your performance with emojis
-- **Responsive Design**: Works on desktop and mobile
-- **Offline Storage**: Game state persists in browser
-- **Beautiful UI**: Clean, modern design with animations
+- **Daily Challenge**: New item every day based on game start date
+- **Real Wheat Prices**: Live wheat futures data from commodity markets
+- **Statistics Tracking**: Win rate, streaks, and detailed game history
+- **Share Results**: Copy results to clipboard with emoji visualization
+- **Responsive Design**: Optimized for both desktop and mobile
+- **Offline Persistence**: Game state and statistics saved locally
+- **Modern UI**: Clean design with smooth animations and transitions
+- **Accessibility**: Proper ARIA labels and keyboard navigation
 
 ## 🌾 Game Items
 
-The game includes 20 different items across two categories:
+The game features over 100 different items ranging from:
+- **Everyday Items**: Coffee, gas station hot dogs, phone bills
+- **Luxury Items**: Tesla Model S, diamond rings, private jets  
+- **Random Fun**: Bugatti Veyron, space tourism, artisanal toast
+- **Household Staples**: Toilet paper, bananas, energy drinks
 
-- **Household**: Everyday items like coffee, groceries, and services
-- **Farm**: Agricultural items like fuel, equipment, and supplies
+Each item includes realistic pricing to make the game both educational and entertaining.
 
 ## 🔧 Development
 
@@ -82,43 +97,89 @@ The game includes 20 different items across two categories:
 
 ```
 src/
-├── app.tsx          # Main game component
-├── main.tsx         # React entry point
-├── index.css        # Global styles and animations
-└── ...
+├── app.tsx              # Main game component
+├── main.tsx             # React entry point
+├── index.css            # Global styles and animations
+├── config.ts            # Game configuration constants
+├── lib.ts               # Core game logic and utilities
+├── types.ts             # TypeScript type definitions
+├── components/          # React components
+│   ├── Header.tsx       # Game header with navigation
+│   ├── GameGrid.tsx     # Guess display grid
+│   ├── InputInterface.tsx # Number input component
+│   ├── Results.tsx      # End game results display
+│   ├── HowToPlayModal.tsx # Game instructions modal
+│   ├── StatisticsModal.tsx # Stats and sharing modal
+│   └── ToastNotification.tsx # Toast messages
+└── data/
+    └── items.ts         # Game items database
 
-public/
-├── wheatle-icon.svg # Game icon
-└── ...
+netlify/
+└── functions/
+    └── pullWheatFutures.mts # Serverless function for wheat prices
+
+utils/
+└── [conversion utilities] # Price conversion helpers
 ```
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production with TypeScript compilation
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint with TypeScript support
+- `npm run lint:fix` - Auto-fix ESLint issues
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
+
+### Game Logic
+
+The game uses several key calculations:
+- **Game Number**: Based on days since start date (June 1, 2025)
+- **Item Selection**: Rotates through items using modulo of game number
+- **Wheat Price**: Fetched from Alpha Vantage API with fallback prices
+- **Accuracy Calculation**: Percentage difference with directional feedback
+- **Statistics**: Win rate, streaks, and game history tracking
 
 ### Customization
 
-To modify game items, edit the `ITEMS_DATABASE` array in `src/app.tsx`. Each item should have:
+To modify game items, edit the `ITEMS_DATABASE` array in `src/data/items.ts`:
 
-- `id`: Unique identifier
-- `name`: Display name
-- `emoji`: Visual representation
-- `price`: Current price in USD
-- `category`: "household" or "farm"
+```typescript
+{
+  id: 'unique_id',
+  name: 'Item Name',
+  emoji: '📱',
+  price: 99.99,
+  category: 'household'
+}
+```
+
+Game configuration can be adjusted in `src/config.ts`:
+- Start date
+- Maximum guesses
+- Accuracy thresholds
+- Share URL
+
+## 🌐 Deployment
+
+The app is deployed on Netlify with:
+- Automatic builds from Git pushes
+- Serverless functions for API calls
+- Environment variable configuration
+- CDN distribution for fast loading
+
+Live at: [thepriceiswheat.netlify.app](https://thepriceiswheat.netlify.app)
 
 ## 📊 Statistics
 
-The game tracks:
+The game tracks and displays:
+- **Games Played**: Total number of games attempted
+- **Win Percentage**: Success rate across all games
+- **Current Streak**: Consecutive wins
+- **Best Streak**: Longest winning streak achieved
 
-- Games played
-- Win percentage
-- Current streak
-- Best streak
-
-All statistics are stored locally in your browser.
+All statistics persist in browser localStorage and can be reset if needed.
 
 ## 🤝 Contributing
 
@@ -134,10 +195,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Inspired by [Wordle](https://www.nytimes.com/games/wordle/index.html)
-- Wheat price data concepts from agricultural commodity markets
-- Built with modern web technologies for optimal performance
+- Inspired by [Wordle](https://www.nytimes.com/games/wordle/index.html) and the daily puzzle game format
+- Wheat futures data provided by [Alpha Vantage](https://www.alphavantage.co/)
+- Agricultural commodity pricing concepts for educational value
+- Built with modern React ecosystem for optimal performance
 
 ---
 
-Made with ❤️ and 🌾 by [Britton Hayes](https://github.com/brittonhayes)
+Made with ❤️ and 🌾 by [@brittonhayes.dev](https://bsky.app/profile/brittonhayes.dev)
