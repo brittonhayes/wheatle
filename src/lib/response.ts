@@ -1,4 +1,4 @@
-import { WheatFuturesResponse } from '../src/types'
+import { WheatFuturesResponse } from '../types'
 
 export const createErrorResponse = (message: string, status = 500) => {
   return new Response(JSON.stringify({ error: message }), {

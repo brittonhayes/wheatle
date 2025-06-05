@@ -5,7 +5,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
   isValidNumericValue
-} from '../../utils'
+} from '../../src/lib'
 import { WheatFuture, WheatFuturesResponse } from '../../src/types'
 
 function convertWheatPriceData(
