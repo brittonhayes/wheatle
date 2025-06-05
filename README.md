@@ -181,25 +181,6 @@ The game tracks and displays:
 
 All statistics persist in browser localStorage and can be reset if needed.
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by [Wordle](https://www.nytimes.com/games/wordle/index.html) and the daily puzzle game format
-- Wheat futures data provided by [Alpha Vantage](https://www.alphavantage.co/)
-- Agricultural commodity pricing concepts for educational value
-- Built with modern React ecosystem for optimal performance
-
 ---
 
 Made with ❤️ and 🌾 by [@brittonhayes.dev](https://bsky.app/profile/brittonhayes.dev)
