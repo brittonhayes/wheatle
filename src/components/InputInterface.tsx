@@ -1,15 +1,15 @@
-import { Guess } from "../types";
+import { Guess } from '../types'
 
 interface InputInterfaceProps {
-  guess: string;
-  guesses: Guess[];
-  onGuessSubmit: () => void;
+  guess: string
+  guesses: Guess[]
+  onGuessSubmit: () => void
 }
 
 export function InputInterface({
   guess,
   guesses,
-  onGuessSubmit,
+  onGuessSubmit
 }: InputInterfaceProps) {
   return (
     <div className="text-center">
@@ -18,7 +18,7 @@ export function InputInterface({
       </div>
       <button
         onClick={onGuessSubmit}
-        disabled={!guess || guess.trim() === ""}
+        disabled={!guess || guess.trim() === ''}
         className="px-8 py-2 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors mb-3"
       >
         SUBMIT
@@ -27,5 +27,5 @@ export function InputInterface({
         {guesses.length}/6 guesses
       </div>
     </div>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import { Info, TrendingUp } from "lucide-react";
+import { Info, TrendingUp } from 'lucide-react'
 
 interface HeaderProps {
-  onShowHowToPlay: () => void;
-  onShowStats: () => void;
+  onShowHowToPlay: () => void
+  onShowStats: () => void
 }
 
 export function Header({ onShowHowToPlay, onShowStats }: HeaderProps) {
@@ -30,5 +30,5 @@ export function Header({ onShowHowToPlay, onShowStats }: HeaderProps) {
         </div>
       </div>
     </header>
-  );
+  )
 }

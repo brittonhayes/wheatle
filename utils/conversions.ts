@@ -3,7 +3,7 @@
  */
 
 // Conversion constant
-export const BUSHELS_PER_METRIC_TON = 36.744;
+export const BUSHELS_PER_METRIC_TON = 36.744
 
 /**
  * Converts metric tons to bushels
@@ -11,7 +11,7 @@ export const BUSHELS_PER_METRIC_TON = 36.744;
  * @returns The equivalent amount in bushels
  */
 export function convertMetricTonsToBushels(metricTons: number): number {
-  return metricTons * BUSHELS_PER_METRIC_TON;
+  return metricTons * BUSHELS_PER_METRIC_TON
 }
 
 /**
@@ -20,7 +20,7 @@ export function convertMetricTonsToBushels(metricTons: number): number {
  * @returns The equivalent amount in metric tons
  */
 export function convertBushelsToMetricTons(bushels: number): number {
-  return bushels / BUSHELS_PER_METRIC_TON;
+  return bushels / BUSHELS_PER_METRIC_TON
 }
 
 /**
@@ -31,7 +31,7 @@ export function convertBushelsToMetricTons(bushels: number): number {
 export function convertPricePerMetricTonToPricePerBushel(
   pricePerMetricTon: number
 ): number {
-  return pricePerMetricTon / BUSHELS_PER_METRIC_TON;
+  return pricePerMetricTon / BUSHELS_PER_METRIC_TON
 }
 
 /**
@@ -41,5 +41,5 @@ export function convertPricePerMetricTonToPricePerBushel(
  * @returns Formatted string with specified decimal places
  */
 export function formatConversionResult(value: number, decimals = 2): string {
-  return value.toFixed(decimals);
+  return value.toFixed(decimals)
 }

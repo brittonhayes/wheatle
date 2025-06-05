@@ -1,23 +1,23 @@
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown } from 'lucide-react'
 
 interface Guess {
-  value: number;
+  value: number
   accuracy: {
-    emoji: string;
-    label: string;
-    color: string;
-    borderColor: string;
-    direction: "higher" | "lower" | "exact";
-  };
-  timestamp: string;
+    emoji: string
+    label: string
+    color: string
+    borderColor: string
+    direction: 'higher' | 'lower' | 'exact'
+  }
+  timestamp: string
 }
 
 interface GameGridProps {
-  guesses: Guess[];
-  guess: string;
-  gameComplete: boolean;
-  onGuessChange: (value: string) => void;
-  onGuessSubmit: () => void;
+  guesses: Guess[]
+  guess: string
+  gameComplete: boolean
+  onGuessChange: (value: string) => void
+  onGuessSubmit: () => void
 }
 
 export function GameGrid({
@@ -25,15 +25,15 @@ export function GameGrid({
   guess,
   gameComplete,
   onGuessChange,
-  onGuessSubmit,
+  onGuessSubmit
 }: GameGridProps) {
   const createGameGrid = () => {
-    const rows = [];
-    const slotsToShow = gameComplete ? 6 : Math.min(6, guesses.length + 1);
+    const rows = []
+    const slotsToShow = gameComplete ? 6 : Math.min(6, guesses.length + 1)
 
     for (let i = 0; i < slotsToShow; i++) {
       if (i < guesses.length) {
-        const guess = guesses[i];
+        const guess = guesses[i]
         if (guess) {
           rows.push(
             <div key={i} className="grid grid-cols-1 gap-2 mb-2">
@@ -51,8 +51,8 @@ export function GameGrid({
                   </div>
                   <div className="text-sm flex items-center justify-center gap-1 pl-2">
                     {guess.value.toFixed(2)}
-                    {guess.accuracy.direction !== "exact" &&
-                      (guess.accuracy.direction === "higher" ? (
+                    {guess.accuracy.direction !== 'exact' &&
+                      (guess.accuracy.direction === 'higher' ? (
                         <ArrowUp className="w-4 h-4 text-gray-600" />
                       ) : (
                         <ArrowDown className="w-4 h-4 text-gray-600" />
@@ -61,7 +61,7 @@ export function GameGrid({
                 </div>
               </div>
             </div>
-          );
+          )
         }
       } else if (i === guesses.length && !gameComplete) {
         rows.push(
@@ -72,17 +72,17 @@ export function GameGrid({
                 step="0.01"
                 placeholder="How many bushels of wheat?"
                 value={guess}
-                onChange={(e) => onGuessChange(e.target.value)}
-                onKeyUp={(e) => e.key === "Enter" && onGuessSubmit()}
+                onChange={e => onGuessChange(e.target.value)}
+                onKeyUp={e => e.key === 'Enter' && onGuessSubmit()}
                 className="w-full h-full text-lg text-center bg-transparent border-none px-4 outline-none placeholder-gray-600"
               />
             </div>
           </div>
-        );
+        )
       }
     }
-    return rows;
-  };
+    return rows
+  }
 
-  return <div className="max-w-sm mx-auto mb-4">{createGameGrid()}</div>;
+  return <div className="max-w-sm mx-auto mb-4">{createGameGrid()}</div>
 }

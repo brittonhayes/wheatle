@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import ITEMS_DATABASE from "./data/items";
-import { Header } from "./components/Header";
-import { GameGrid } from "./components/GameGrid";
-import { InputInterface } from "./components/InputInterface";
-import { Results } from "./components/Results";
-import { HowToPlayModal } from "./components/HowToPlayModal";
-import { StatisticsModal } from "./components/StatisticsModal";
-import { ToastNotification } from "./components/ToastNotification";
-import { Guess, Item, Stats } from "./types";
+import { useState, useEffect } from 'react'
+import ITEMS_DATABASE from './data/items'
+import { Header } from './components/Header'
+import { GameGrid } from './components/GameGrid'
+import { InputInterface } from './components/InputInterface'
+import { Results } from './components/Results'
+import { HowToPlayModal } from './components/HowToPlayModal'
+import { StatisticsModal } from './components/StatisticsModal'
+import { ToastNotification } from './components/ToastNotification'
+import { Guess, Item, Stats } from './types'
 import {
   calculateAccuracy,
   fetchWheatPrice,
@@ -26,133 +26,133 @@ import {
   hasPlayedToday,
   isValidGuess,
   isGameComplete,
-  isGameWon,
-  GAME_CONFIG,
-} from "./lib";
+  isGameWon
+} from './lib'
+import { GAME_CONFIG } from './config'
 
 export default function WheatleGame() {
-  const [wheatPrice, setWheatPrice] = useState<number | undefined>(undefined);
-  const [gameNumber, setGameNumber] = useState(1);
-  const [todaysItem, setTodaysItem] = useState<Item | null>(null);
-  const [guess, setGuess] = useState("");
-  const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [gameComplete, setGameComplete] = useState(false);
-  const [gameWon, setGameWon] = useState(false);
-  const [showStats, setShowStats] = useState(false);
-  const [showHowToPlay, setShowHowToPlay] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [isLoadingPrice, setIsLoadingPrice] = useState(true);
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [stats, setStats] = useState<Stats>(loadStats);
+  const [wheatPrice, setWheatPrice] = useState<number | undefined>(undefined)
+  const [gameNumber, setGameNumber] = useState(1)
+  const [todaysItem, setTodaysItem] = useState<Item | null>(null)
+  const [guess, setGuess] = useState('')
+  const [guesses, setGuesses] = useState<Guess[]>([])
+  const [gameComplete, setGameComplete] = useState(false)
+  const [gameWon, setGameWon] = useState(false)
+  const [showStats, setShowStats] = useState(false)
+  const [showHowToPlay, setShowHowToPlay] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+  const [isLoadingPrice, setIsLoadingPrice] = useState(true)
+  const [showAnswer, setShowAnswer] = useState(false)
+  const [stats, setStats] = useState<Stats>(loadStats)
 
   // Initialize game on load
   useEffect(() => {
-    const currentGameNumber = calculateGameNumber();
-    setGameNumber(currentGameNumber);
-    setTodaysItem(selectTodaysItem(ITEMS_DATABASE, currentGameNumber));
+    const currentGameNumber = calculateGameNumber()
+    setGameNumber(currentGameNumber)
+    setTodaysItem(selectTodaysItem(ITEMS_DATABASE, currentGameNumber))
 
     // Fetch wheat price from API
     const loadWheatPrice = async () => {
-      setIsLoadingPrice(true);
+      setIsLoadingPrice(true)
       try {
-        const price = await fetchWheatPrice();
-        setWheatPrice(price);
+        const price = await fetchWheatPrice()
+        setWheatPrice(price)
       } finally {
-        setIsLoadingPrice(false);
+        setIsLoadingPrice(false)
       }
-    };
+    }
 
-    loadWheatPrice();
+    loadWheatPrice()
 
     // Check if already played today
     if (hasPlayedToday()) {
-      const savedState = loadGameState();
+      const savedState = loadGameState()
       if (savedState) {
-        setGuesses(savedState.guesses);
-        setGameComplete(savedState.complete);
-        setGameWon(savedState.won);
+        setGuesses(savedState.guesses)
+        setGameComplete(savedState.complete)
+        setGameWon(savedState.won)
       }
     }
-  }, []);
+  }, [])
 
   const showToastMessage = (message: string) => {
-    setToastMessage(message);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-  };
+    setToastMessage(message)
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 2000)
+  }
 
   const handleGuess = () => {
-    if (gameComplete || guesses.length >= GAME_CONFIG.MAX_GUESSES) return;
+    if (gameComplete || guesses.length >= GAME_CONFIG.MAX_GUESSES) return
 
-    const validation = isValidGuess(guess);
+    const validation = isValidGuess(guess)
     if (!validation.isValid) {
-      showToastMessage(validation.error || "Invalid guess");
-      return;
+      showToastMessage(validation.error || 'Invalid guess')
+      return
     }
 
-    const guessValue = validation.value!;
-    const actualBushels = getActualBushels(wheatPrice, todaysItem?.price);
-    const guessAccuracy = calculateAccuracy(guessValue, actualBushels);
+    const guessValue = validation.value!
+    const actualBushels = getActualBushels(wheatPrice, todaysItem?.price)
+    const guessAccuracy = calculateAccuracy(guessValue, actualBushels)
 
     const newGuess: Guess = {
       value: guessValue,
       accuracy: guessAccuracy,
-      timestamp: new Date().toISOString(),
-    };
+      timestamp: new Date().toISOString()
+    }
 
-    const newGuesses = [...guesses, newGuess];
-    setGuesses(newGuesses);
-    setGuess("");
+    const newGuesses = [...guesses, newGuess]
+    setGuesses(newGuesses)
+    setGuess('')
 
-    const complete = isGameComplete(newGuesses);
-    const won = isGameWon(newGuesses);
+    const complete = isGameComplete(newGuesses)
+    const won = isGameWon(newGuesses)
 
     if (complete) {
-      setGameComplete(true);
-      setGameWon(won);
-      handleGameComplete(won);
-      saveGameState(newGuesses, complete, won);
-      setTimeout(() => setShowStats(true), 1500);
+      setGameComplete(true)
+      setGameWon(won)
+      handleGameComplete(won)
+      saveGameState(newGuesses, complete, won)
+      setTimeout(() => setShowStats(true), 1500)
     }
-  };
+  }
 
   const handleGameComplete = (won: boolean) => {
-    const newStats = calculateUpdatedStats(stats, won);
-    setStats(newStats);
-    saveStats(newStats);
-  };
+    const newStats = calculateUpdatedStats(stats, won)
+    setStats(newStats)
+    saveStats(newStats)
+  }
 
   const handleResetStats = () => {
     if (
       confirm(
-        "Are you sure you want to reset all statistics? This cannot be undone."
+        'Are you sure you want to reset all statistics? This cannot be undone.'
       )
     ) {
-      const success = clearAllGameData();
+      const success = clearAllGameData()
       if (success) {
-        setStats(createInitialStats());
-        setGuesses([]);
-        setGameComplete(false);
-        setGameWon(false);
-        setShowStats(false);
-        showToastMessage("Statistics have been reset!");
+        setStats(createInitialStats())
+        setGuesses([])
+        setGameComplete(false)
+        setGameWon(false)
+        setShowStats(false)
+        showToastMessage('Statistics have been reset!')
       } else {
-        showToastMessage("Failed to reset statistics. Please try again.");
+        showToastMessage('Failed to reset statistics. Please try again.')
       }
     }
-  };
+  }
 
   const handleShareResults = async () => {
     try {
-      const gameResult = createShareText(gameNumber, guesses, gameWon);
-      await copyTextToClipboard(gameResult);
-      showToastMessage("Copied results to clipboard");
+      const gameResult = createShareText(gameNumber, guesses, gameWon)
+      await copyTextToClipboard(gameResult)
+      showToastMessage('Copied results to clipboard')
     } catch (error) {
-      console.error("Failed to copy to clipboard:", error);
-      showToastMessage("Failed to copy results");
+      console.error('Failed to copy to clipboard:', error)
+      showToastMessage('Failed to copy results')
     }
-  };
+  }
 
   if (!todaysItem || wheatPrice === undefined || isLoadingPrice) {
     return (
@@ -160,11 +160,11 @@ export default function WheatleGame() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
           <p className="text-gray-600">
-            {isLoadingPrice ? "Loading wheat prices..." : "Loading game..."}
+            {isLoadingPrice ? 'Loading wheat prices...' : 'Loading game...'}
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -221,7 +221,7 @@ export default function WheatleGame() {
         </main>
 
         <footer className="mt-16 text-center text-xs text-gray-400">
-          made with 🌾 by{" "}
+          made with 🌾 by{' '}
           <a
             href="https://bsky.app/profile/brittonhayes.dev"
             target="_blank"
@@ -249,5 +249,5 @@ export default function WheatleGame() {
 
       {showToast && <ToastNotification message={toastMessage} />}
     </div>
-  );
+  )
 }

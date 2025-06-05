@@ -23,17 +23,20 @@ A daily word game inspired by Wordle, but for wheat prices! Guess how many bushe
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/brittonhayes/wheatle.git
 cd wheatle
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -69,6 +72,7 @@ The built files will be in the `dist` directory.
 ## 🌾 Game Items
 
 The game includes 20 different items across two categories:
+
 - **Household**: Everyday items like coffee, groceries, and services
 - **Farm**: Agricultural items like fuel, equipment, and supplies
 
@@ -98,6 +102,7 @@ public/
 ### Customization
 
 To modify game items, edit the `ITEMS_DATABASE` array in `src/app.tsx`. Each item should have:
+
 - `id`: Unique identifier
 - `name`: Display name
 - `emoji`: Visual representation
@@ -107,6 +112,7 @@ To modify game items, edit the `ITEMS_DATABASE` array in `src/app.tsx`. Each ite
 ## 📊 Statistics
 
 The game tracks:
+
 - Games played
 - Win percentage
 - Current streak
@@ -134,4 +140,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ and 🌾 by [Britton Hayes](https://github.com/brittonhayes) 
+Made with ❤️ and 🌾 by [Britton Hayes](https://github.com/brittonhayes)

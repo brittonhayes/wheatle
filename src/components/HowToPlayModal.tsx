@@ -1,7 +1,7 @@
-import { X } from "lucide-react";
+import { X } from 'lucide-react'
 
 interface HowToPlayModalProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
@@ -98,5 +98,5 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

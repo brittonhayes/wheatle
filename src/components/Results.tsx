@@ -1,15 +1,15 @@
-import { Share2, TrendingUp } from "lucide-react";
-import { Guess } from "../types";
+import { Share2, TrendingUp } from 'lucide-react'
+import { Guess } from '../types'
 
 interface ResultsProps {
-  gameWon: boolean;
-  guesses: Guess[];
-  gameNumber: number;
-  actualBushels: number;
-  showAnswer: boolean;
-  onShowAnswer: () => void;
-  onShareResults: () => void;
-  onShowStats: () => void;
+  gameWon: boolean
+  guesses: Guess[]
+  gameNumber: number
+  actualBushels: number
+  showAnswer: boolean
+  onShowAnswer: () => void
+  onShareResults: () => void
+  onShowStats: () => void
 }
 
 export function Results({
@@ -20,17 +20,17 @@ export function Results({
   showAnswer,
   onShowAnswer,
   onShareResults,
-  onShowStats,
+  onShowStats
 }: ResultsProps) {
   return (
     <div className="text-center space-y-4 mt-8">
       <div className="rounded-lg p-6">
         <h3 className="text-2xl font-bold mb-2 text-gray-800">
-          {gameWon ? "🎉 Well done!" : "😔 Better luck tomorrow!"}
+          {gameWon ? '🎉 Well done!' : '😔 Better luck tomorrow!'}
         </h3>
         {gameWon && (
           <div className="text-lg text-gray-700 mb-2">
-            The answer was{" "}
+            The answer was{' '}
             <span className="font-bold text-amber-600">
               {actualBushels.toFixed(2)} bushels
             </span>
@@ -47,7 +47,7 @@ export function Results({
               </button>
             ) : (
               <div className="text-lg text-gray-700">
-                The answer was{" "}
+                The answer was{' '}
                 <span className="font-bold text-amber-600">
                   {actualBushels.toFixed(2)} bushels
                 </span>
@@ -56,7 +56,7 @@ export function Results({
           </div>
         )}
         <div className="text-sm text-gray-500">
-          The Price Is Wheat #{gameNumber} • {gameWon ? guesses.length : "X"}/6
+          The Price Is Wheat #{gameNumber} • {gameWon ? guesses.length : 'X'}/6
         </div>
       </div>
 
@@ -77,5 +77,5 @@ export function Results({
         </button>
       </div>
     </div>
-  );
+  )
 }
