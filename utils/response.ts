@@ -1,6 +1,6 @@
-import { WheatFuturesResponse } from "../types";
+import { WheatFuturesResponse } from "../src/types";
 
-export const createErrorResponse = (message: string, status: number = 500) => {
+export const createErrorResponse = (message: string, status = 500) => {
   return new Response(JSON.stringify({ error: message }), {
     status,
     headers: { "Content-Type": "application/json" },

@@ -6,11 +6,14 @@ import {
   createSuccessResponse,
   isValidNumericValue,
 } from "../../utils";
+import { WheatFuture, WheatFuturesResponse } from "../../src/types";
 
-function convertWheatPriceData(data: any): any {
+function convertWheatPriceData(
+  data: WheatFuturesResponse
+): WheatFuturesResponse {
   // Convert prices from dollar per metric ton to dollar per bushel
   if (data.data && Array.isArray(data.data)) {
-    data.data = data.data.map((item: any) => {
+    data.data = data.data.map((item: WheatFuture) => {
       if (isValidNumericValue(item.value)) {
         const numericValue = parseFloat(item.value);
         return {
@@ -37,7 +40,6 @@ async function fetchWheatFuturesData(apiKey: string) {
   const url = `https://www.alphavantage.co/query?function=WHEAT&apikey=${apiKey}`;
 
   const response = await fetch(url);
-
   if (!response.ok) {
     throw new Error(
       `Alpha Vantage API error: ${response.status} ${response.statusText}`

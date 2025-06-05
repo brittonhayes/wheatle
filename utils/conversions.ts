@@ -40,9 +40,6 @@ export function convertPricePerMetricTonToPricePerBushel(
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted string with specified decimal places
  */
-export function formatConversionResult(
-  value: number,
-  decimals: number = 2
-): string {
+export function formatConversionResult(value: number, decimals = 2): string {
   return value.toFixed(decimals);
 }
