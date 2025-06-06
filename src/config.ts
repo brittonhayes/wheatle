@@ -12,7 +12,7 @@ export const STORAGE_KEYS = {
 export const GAME_CONFIG = {
   START_DATE: new Date('2025-06-01'),
   MAX_GUESSES: 6,
-  SHARE_URL: 'https://thepriceiswheat.netlify.app'
+  SHARE_URL: 'thepriceiswheat.netlify.app'
 } as const
 
 export const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000
