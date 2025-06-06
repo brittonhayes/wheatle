@@ -63,16 +63,30 @@ export default function WheatleGame() {
       }
     }
 
-    loadWheatPrice()
+    void loadWheatPrice()
     if (hasPlayedToday()) {
       const savedState = loadGameState()
-      if (savedState) {
+      if (savedState !== null) {
         setGuesses(savedState.guesses)
         setGameComplete(savedState.complete)
         setGameWon(savedState.won)
+        setShowAnswer(savedState.showAnswer)
       }
+    } else {
+      // Reset all game state for a new day
+      setGuesses([])
+      setGameComplete(false)
+      setGameWon(false)
+      setShowAnswer(false)
     }
   }, [])
+
+  // Save game state when showAnswer changes (for games that are already complete)
+  useEffect(() => {
+    if (gameComplete && hasPlayedToday()) {
+      saveGameState(guesses, gameComplete, gameWon, showAnswer)
+    }
+  }, [showAnswer, gameComplete, gameWon, guesses])
 
   const showToastMessage = (message: string) => {
     setToastMessage(message)
@@ -81,11 +95,13 @@ export default function WheatleGame() {
   }
 
   const handleGuess = () => {
-    if (gameComplete || guesses.length >= GAME_CONFIG.MAX_GUESSES) return
+    if (gameComplete || guesses.length >= GAME_CONFIG.MAX_GUESSES) {
+      return
+    }
 
     const validation = isValidGuess(guess)
     if (!validation.isValid) {
-      showToastMessage(validation.error || 'Invalid guess')
+      showToastMessage(validation.error ?? 'Invalid guess')
       return
     }
 
@@ -114,7 +130,7 @@ export default function WheatleGame() {
       setGameComplete(true)
       setGameWon(won)
       handleGameComplete(won)
-      saveGameState(newGuesses, complete, won)
+      saveGameState(newGuesses, complete, won, showAnswer)
     }
   }
 

@@ -46,6 +46,7 @@ export interface GameState {
   guesses: Guess[]
   complete: boolean
   won: boolean
+  showAnswer: boolean
   date: string
 }
 
@@ -53,6 +54,7 @@ export interface SavedGameState {
   guesses: Guess[]
   complete: boolean
   won: boolean
+  showAnswer: boolean
 }
 
 export type GuessAccuracyLevels = Record<

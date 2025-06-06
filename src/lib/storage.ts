@@ -56,7 +56,9 @@ function isValidGameState(data: unknown): data is SavedGameState {
 // Stats storage operations
 export function loadStats(): Stats {
   const saved = getFromStorage(STORAGE_KEYS.STATS)
-  if (!saved) return createInitialStats()
+  if (saved === null) {
+    return createInitialStats()
+  }
 
   try {
     const parsed = JSON.parse(saved)
@@ -73,11 +75,21 @@ export function saveStats(stats: Stats): boolean {
 // Game state storage operations
 export function loadGameState(): SavedGameState | null {
   const saved = getFromStorage(STORAGE_KEYS.GAME_STATE)
-  if (!saved) return null
+  if (saved === null) {
+    return null
+  }
 
   try {
     const parsed = JSON.parse(saved)
-    return isValidGameState(parsed) ? parsed : null
+    if (isValidGameState(parsed)) {
+      // Handle backward compatibility - if showAnswer is not present, default to false
+      return {
+        ...parsed,
+        showAnswer:
+          typeof parsed.showAnswer === 'boolean' ? parsed.showAnswer : false
+      }
+    }
+    return null
   } catch {
     return null
   }
@@ -86,10 +98,17 @@ export function loadGameState(): SavedGameState | null {
 export function saveGameState(
   guesses: Guess[],
   complete: boolean,
-  won: boolean
+  won: boolean,
+  showAnswer: boolean
 ): boolean {
   const today = new Date().toDateString()
-  const gameState: GameState = { guesses, complete, won, date: today }
+  const gameState: GameState = {
+    guesses,
+    complete,
+    won,
+    showAnswer,
+    date: today
+  }
 
   const success = saveToStorage(
     STORAGE_KEYS.GAME_STATE,

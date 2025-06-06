@@ -9,7 +9,7 @@ export async function fetchWheatPrice(
   try {
     // Check cache first
     const cached = getFromStorage(STORAGE_KEYS.WHEAT_PRICE_CACHE)
-    if (cached) {
+    if (cached !== null) {
       const { price, timestamp } = JSON.parse(cached)
       const now = Date.now()
       if (now - timestamp < ONE_DAY_IN_MILLISECONDS) {
@@ -25,9 +25,12 @@ export async function fetchWheatPrice(
     const data: WheatFuturesResponse = await response.json()
 
     // Extract the most recent wheat price from the API response
-    if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+    if (Array.isArray(data.data) && data.data.length > 0) {
       const mostRecentPrice = data.data[0]?.value
-      if (mostRecentPrice && !isNaN(parseFloat(mostRecentPrice))) {
+      if (
+        mostRecentPrice !== undefined &&
+        !isNaN(parseFloat(mostRecentPrice))
+      ) {
         const price = parseFloat(mostRecentPrice)
         setWheatPriceCache(price, Date.now())
 
@@ -44,7 +47,7 @@ export async function fetchWheatPrice(
   }
 }
 
-export function setWheatPriceCache(price: number, timestamp: number) {
+export function setWheatPriceCache(price: number, timestamp: number): void {
   saveToStorage(
     STORAGE_KEYS.WHEAT_PRICE_CACHE,
     JSON.stringify({ price, timestamp })
@@ -56,7 +59,9 @@ export function getWheatPriceCache(): {
   timestamp: number
 } | null {
   const cached = getFromStorage(STORAGE_KEYS.WHEAT_PRICE_CACHE)
-  if (!cached) return null
+  if (cached === null) {
+    return null
+  }
   try {
     const { price, timestamp } = JSON.parse(cached)
     return { price, timestamp }

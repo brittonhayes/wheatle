@@ -6,7 +6,9 @@ export function selectTodaysItem(
   items: Item[],
   gameNumber: number = calculateGameNumber()
 ): Item | null {
-  if (items.length === 0) return null
+  if (items.length === 0) {
+    return null
+  }
   const itemIndex = (gameNumber - 1) % items.length
   return items[itemIndex] ?? null
 }
@@ -30,7 +32,9 @@ export function isGameComplete(
   guesses: Guess[],
   maxGuesses: number = GAME_CONFIG.MAX_GUESSES
 ): boolean {
-  if (guesses.length >= maxGuesses) return true
+  if (guesses.length >= maxGuesses) {
+    return true
+  }
   return guesses.some(guess => guess.accuracy.emoji === '🎯')
 }
 

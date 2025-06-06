@@ -42,8 +42,15 @@ export const calculateAccuracy = (
 export const getActualBushels = (
   wheatPrice?: number,
   todaysItemPrice?: number
-) => {
-  if (!wheatPrice || !todaysItemPrice) return 0
+): number => {
+  if (
+    wheatPrice === null ||
+    wheatPrice === undefined ||
+    todaysItemPrice === null ||
+    todaysItemPrice === undefined
+  ) {
+    return 0
+  }
   return todaysItemPrice / wheatPrice
 }
 

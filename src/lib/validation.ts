@@ -3,7 +3,7 @@ export function isValidGuess(guess: string): {
   value?: number
   error?: string
 } {
-  if (!guess.trim()) {
+  if (guess.trim() === '') {
     return { isValid: false, error: 'Please enter a number' }
   }
 
