@@ -18,7 +18,7 @@ export function InputInterface({
       </div>
       <button
         onClick={onGuessSubmit}
-        disabled={!guess || guess.trim() === ''}
+        disabled={guess === ''}
         className="px-8 py-2 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors mb-3"
       >
         SUBMIT

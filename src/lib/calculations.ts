@@ -23,7 +23,7 @@ export const calculateAccuracy = (
     level => percentOff <= level.threshold
   )
 
-  if (level) {
+  if (level !== undefined) {
     return {
       ...level,
       direction
@@ -43,12 +43,7 @@ export const getActualBushels = (
   wheatPrice?: number,
   todaysItemPrice?: number
 ): number => {
-  if (
-    wheatPrice === null ||
-    wheatPrice === undefined ||
-    todaysItemPrice === null ||
-    todaysItemPrice === undefined
-  ) {
+  if (wheatPrice === undefined || todaysItemPrice === undefined) {
     return 0
   }
   return todaysItemPrice / wheatPrice

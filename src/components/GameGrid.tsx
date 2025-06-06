@@ -34,7 +34,7 @@ export function GameGrid({
     for (let i = 0; i < slotsToShow; i++) {
       if (i < guesses.length) {
         const guess = guesses[i]
-        if (guess) {
+        if (guess !== undefined) {
           rows.push(
             <div key={i} className="grid grid-cols-1 gap-2 mb-2">
               <div

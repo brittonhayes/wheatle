@@ -1,4 +1,5 @@
 export async function copyTextToClipboard(text: string): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (navigator.clipboard !== undefined && window.isSecureContext === true) {
     return navigator.clipboard.writeText(text)
   }

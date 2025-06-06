@@ -171,7 +171,7 @@ export default function WheatleGame() {
     }
   }
 
-  if (!todaysItem || wheatPrice === undefined || isLoadingPrice) {
+  if (todaysItem === null || wheatPrice === undefined || isLoadingPrice) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="text-center">
