@@ -20,14 +20,14 @@ export const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000
 export const GUESS_ACCURACY_LEVELS: GuessAccuracyLevels = {
   EXACT: {
     threshold: 10,
-    emoji: '🎯',
+    emoji: '🌾',
     label: 'Exact',
     color: 'bg-green-100',
     borderColor: 'border-green-400'
   },
   CLOSE: {
     threshold: 25,
-    emoji: '🌾',
+    emoji: '🤏',
     label: 'Close',
     color: 'bg-yellow-100',
     borderColor: 'border-yellow-400'
