@@ -16,7 +16,6 @@ export interface Item {
   name: string
   emoji: string
   price: number
-  category: string
 }
 
 export interface WheatFuturesResponse {

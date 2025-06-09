@@ -151,7 +151,6 @@ To modify game items, edit the `ITEMS_DATABASE` array in `src/data/items.ts`:
   name: 'Item Name',
   emoji: '📱',
   price: 99.99,
-  category: 'household'
 }
 ```
 
