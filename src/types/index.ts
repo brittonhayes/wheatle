@@ -36,6 +36,7 @@ export interface Accuracy {
   color: string
   borderColor: string
   direction: AccuracyDirection
+  isWinCondition: boolean
 }
 
 export type AccuracyDirection = 'higher' | 'lower' | 'exact'
@@ -64,5 +65,6 @@ export type GuessAccuracyLevels = Record<
     label: string
     color: string
     borderColor: string
+    isWinCondition: boolean
   }
 >

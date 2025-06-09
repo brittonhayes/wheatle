@@ -158,6 +158,7 @@ export default function WheatleGame() {
       setGameWon(won)
       handleGameComplete(won)
       saveGameState(newGuesses, complete, won, showAnswer)
+      return
     }
   }
 

@@ -23,20 +23,23 @@ export const GUESS_ACCURACY_LEVELS: GuessAccuracyLevels = {
     emoji: '🌾',
     label: 'Exact',
     color: 'bg-green-100 dark:bg-green-900',
-    borderColor: 'border-green-400 dark:border-green-500'
+    borderColor: 'border-green-400 dark:border-green-500',
+    isWinCondition: true
   },
   CLOSE: {
     threshold: 25,
     emoji: '🤏',
     label: 'Close',
     color: 'bg-yellow-100 dark:bg-yellow-900',
-    borderColor: 'border-yellow-400'
+    borderColor: 'border-yellow-400',
+    isWinCondition: false
   },
   WARM: {
     threshold: 50,
     emoji: '🌱',
     label: 'Warm',
     color: 'bg-orange-100 dark:bg-orange-900',
-    borderColor: 'border-orange-400 dark:border-orange-500'
+    borderColor: 'border-orange-400 dark:border-orange-500',
+    isWinCondition: false
   }
 }

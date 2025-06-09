@@ -35,9 +35,9 @@ export function isGameComplete(
   if (guesses.length >= maxGuesses) {
     return true
   }
-  return guesses.some(guess => guess.accuracy.emoji === '🎯')
+  return guesses.some(guess => guess.accuracy.isWinCondition)
 }
 
 export function isGameWon(guesses: Guess[]): boolean {
-  return guesses.some(guess => guess.accuracy.emoji === '🎯')
+  return guesses.some(guess => guess.accuracy.isWinCondition)
 }

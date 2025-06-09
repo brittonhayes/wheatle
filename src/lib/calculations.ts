@@ -35,6 +35,7 @@ export const calculateAccuracy = (
     label: 'Cold',
     color: 'bg-blue-100 dark:bg-blue-900',
     borderColor: 'border-blue-400 dark:border-blue-500',
+    isWinCondition: false,
     direction
   }
 }
