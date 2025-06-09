@@ -63,14 +63,14 @@ export function Results({
       <div className="flex gap-3 justify-center">
         <button
           onClick={onShareResults}
-          className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition-colors dark:bg-green-500 dark:hover:bg-green-600 dark:text-white"
+          className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition-colors dark:bg-green-600 dark:hover:bg-green-800 dark:text-white"
         >
           <Copy className="w-4 h-4" />
           Share
         </button>
         <button
           onClick={onShowStats}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 transition-colors dark:bg-blue-600 dark:hover:bg-blue-800 dark:text-white"
         >
           <TrendingUp className="w-4 h-4" />
           Stats
