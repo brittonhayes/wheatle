@@ -40,22 +40,22 @@ export function GameGrid({
               <div
                 className={`
                 w-full h-18 border ${guess.accuracy.borderColor} ${guess.accuracy.color}
-                flex items-center justify-center text-gray-800 font-bold text-lg
+                flex items-center justify-center text-gray-800 dark:text-gray-200 font-bold text-lg
                 rounded transition-all duration-250 ease-in-out transform scale-100
               `}
               >
                 <div className="text-center">
                   <div className="text-md">{guess.accuracy.emoji}</div>
-                  <div className="text-sm font-medium text-gray-600">
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-300">
                     {guess.accuracy.label}
                   </div>
                   <div className="text-sm flex items-center justify-center gap-1 pl-2">
                     {guess.value.toFixed(2)}
                     {guess.accuracy.direction !== 'exact' &&
                       (guess.accuracy.direction === 'higher' ? (
-                        <ArrowUp className="w-4 h-4 text-gray-600" />
+                        <ArrowUp className="w-4 h-4 text-gray-600 dark:text-white" />
                       ) : (
-                        <ArrowDown className="w-4 h-4 text-gray-600" />
+                        <ArrowDown className="w-4 h-4 text-gray-600 dark:text-white" />
                       ))}
                   </div>
                 </div>
@@ -66,7 +66,7 @@ export function GameGrid({
       } else if (i === guesses.length && !gameComplete) {
         rows.push(
           <div key={i} className="grid grid-cols-1 gap-2 mb-2">
-            <div className="w-full h-14 border-2 border-gray-200 mt-5 bg-white flex items-center justify-center rounded shadow-sm">
+            <div className="w-full h-14 border-2 border-gray-200 dark:border-gray-500 mt-5 bg-white dark:bg-black flex items-center justify-center rounded shadow-sm">
               <input
                 type="number"
                 step="0.01"
@@ -74,7 +74,7 @@ export function GameGrid({
                 value={guess}
                 onChange={e => onGuessChange(e.target.value)}
                 onKeyUp={e => e.key === 'Enter' && onGuessSubmit()}
-                className="w-full h-full text-lg text-center bg-transparent border-none px-4 outline-none placeholder-gray-600"
+                className="w-full h-full text-lg text-center bg-transparent border-none px-4 outline-none placeholder-gray-600 dark:text-gray-300 dark:placeholder-gray-400"
               />
             </div>
           </div>

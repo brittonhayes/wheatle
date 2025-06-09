@@ -25,11 +25,11 @@ export function Results({
   return (
     <div className="text-center space-y-4 mt-8">
       <div className="rounded-lg p-6">
-        <h3 className="text-2xl font-bold mb-2 text-gray-800">
+        <h3 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">
           {gameWon ? '🎉 Well done!' : '😔 Better luck tomorrow!'}
         </h3>
         {gameWon && (
-          <div className="text-lg text-gray-700 mb-2">
+          <div className="text-lg text-gray-700 mb-2 dark:text-gray-300">
             The answer was{' '}
             <span className="font-bold text-amber-600">
               {actualBushels.toFixed(2)} bushels
@@ -41,12 +41,12 @@ export function Results({
             {!showAnswer ? (
               <button
                 onClick={onShowAnswer}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors text-sm"
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors text-sm dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               >
                 🔍 Reveal Answer
               </button>
             ) : (
-              <div className="text-lg text-gray-700">
+              <div className="text-lg text-gray-700 dark:text-gray-300">
                 The answer was&nbsp;
                 <span className="font-bold text-amber-600">
                   {actualBushels.toFixed(2)} bushels
@@ -55,7 +55,7 @@ export function Results({
             )}
           </div>
         )}
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-300">
           The Price Is Wheat #{gameNumber} • {gameWon ? guesses.length : 'X'}/6
         </div>
       </div>
@@ -63,7 +63,7 @@ export function Results({
       <div className="flex gap-3 justify-center">
         <button
           onClick={onShareResults}
-          className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition-colors"
+          className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition-colors dark:bg-green-500 dark:hover:bg-green-600 dark:text-white"
         >
           <Copy className="w-4 h-4" />
           Share

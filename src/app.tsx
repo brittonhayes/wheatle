@@ -46,6 +46,33 @@ export default function WheatleGame() {
   const [showAnswer, setShowAnswer] = useState(false)
   const [stats, setStats] = useState<Stats>(loadStats)
 
+  // Dark mode detection based on system preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    }
+
+    // Set initial theme
+    if (mediaQuery.matches) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+
+    // Listen for changes
+    mediaQuery.addEventListener('change', handleThemeChange)
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange)
+    }
+  }, [])
+
   // Initialize game on load
   useEffect(() => {
     const currentGameNumber = calculateGameNumber()
@@ -173,10 +200,10 @@ export default function WheatleGame() {
 
   if (todaysItem === null || wheatPrice === undefined || isLoadingPrice) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-black">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-100">
             {isLoadingPrice ? 'Loading wheat prices...' : 'Loading game...'}
           </p>
         </div>
@@ -185,8 +212,8 @@ export default function WheatleGame() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg flex-grow flex flex-col">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100 dark:bg-black">
+      <div className="w-full max-w-md bg-white dark:bg-black rounded-lg flex-grow flex flex-col shadow-lg dark:shadow-none dark:shadow-gray-800/50">
         <Header
           onShowHowToPlay={() => setShowHowToPlay(true)}
           onShowStats={() => setShowStats(true)}
@@ -196,11 +223,11 @@ export default function WheatleGame() {
           <div className="text-center mb-6">
             <div className="inline-flex text-center items-center gap-3 px-6 py-3 rounded-lg">
               <div className="text-center">
-                <div className="font-semibold text-gray-800 text-sm">
+                <div className="font-semibold text-gray-800 dark:text-white text-sm">
                   {todaysItem.name}
                 </div>
                 <span className="text-3xl">{todaysItem.emoji}</span>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                   ${todaysItem.price.toFixed(2)}
                 </div>
               </div>
@@ -237,13 +264,13 @@ export default function WheatleGame() {
           )}
         </main>
 
-        <footer className="mt-16 text-center text-xs text-gray-400">
+        <footer className="mt-16 text-center text-xs text-gray-400 dark:text-gray-300">
           made with 🌾 by &nbsp;
           <a
             href="https://bsky.app/profile/brittonhayes.dev"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-amber-600 hover:text-amber-500"
+            className="text-amber-600 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
           >
             @brittonhayes.dev
           </a>

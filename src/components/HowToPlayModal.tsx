@@ -7,18 +7,20 @@ interface HowToPlayModalProps {
 export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-3 z-50">
-      <div className="bg-white rounded-lg p-4 w-full max-w-sm mx-2 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 w-full max-w-sm mx-2 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-gray-800">How to Play</h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white">
+            How to Play
+          </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-200"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-3 text-xs text-gray-700">
+        <div className="space-y-3 text-xs text-gray-700 dark:text-gray-300">
           <div>
             <p className="font-semibold mb-1 text-sm">🎯 Objective</p>
             <p>
@@ -29,7 +31,7 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
 
           <div>
             <p className="font-semibold mb-1 text-sm">🎮 Rules</p>
-            <ul className="space-y-0.5 list-disc list-outside ml-4 text-xs">
+            <ul className="space-y-0.5 list-disc list-outside ml-4 text-xs dark:text-gray-300">
               <li>See an item and its price</li>
               <li>Guess wheat bushels needed</li>
               <li>6 attempts to get it right</li>
@@ -39,7 +41,7 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
 
           <div>
             <p className="font-semibold mb-1 text-sm">📊 Feedback</p>
-            <div className="space-y-1">
+            <div className="space-y-1 dark:text-gray-300">
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-sm">🎯</span>
                 <span>
@@ -69,19 +71,19 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
 
           <div>
             <p className="font-semibold mb-1 text-sm">🔄 Arrows</p>
-            <p className="text-xs">
+            <p className="text-xs dark:text-gray-300">
               Arrows show if the answer is higher ⬆️ or lower ⬇️.
             </p>
           </div>
 
-          <div className="bg-amber-50 p-2 rounded">
-            <p className="font-semibold text-amber-800 text-xs mb-0.5">
+          <div className="bg-amber-50 dark:bg-amber-900 p-2 rounded">
+            <p className="font-semibold text-amber-800 text-xs mb-0.5 dark:text-white">
               💡 Daily Game
             </p>
-            <p className="text-amber-700 text-xs">
+            <p className="text-amber-700 text-xs dark:text-gray-300">
               New game daily at 5:00 AM PST with fresh items and wheat prices!
             </p>
-            <p className="text-amber-700 text-xs mt-1">
+            <p className="text-amber-700 text-xs mt-1 dark:text-gray-300">
               Wheat prices are based on this month's real commodity price,
               converted to dollars per bushel for the game.
             </p>
@@ -91,7 +93,7 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
         <div className="mt-4">
           <button
             onClick={onClose}
-            className="w-full py-2 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 transition-colors text-sm"
+            className="w-full py-2 bg-amber-600 text-white font-bold rounded-md hover:bg-amber-700 transition-colors text-sm dark:bg-amber-500 dark:hover:bg-amber-600 dark:text-white"
           >
             Got it!
           </button>
