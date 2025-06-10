@@ -213,8 +213,8 @@ export default function WheatleGame() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100 dark:bg-black">
-      <div className="w-full max-w-md bg-white dark:bg-black rounded-lg flex-grow flex flex-col shadow-lg dark:shadow-none dark:shadow-gray-800/50">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-black">
+      <div className="w-full max-w-md bg-white dark:bg-black rounded-lg flex-grow flex flex-col dark:shadow-none dark:shadow-gray-800/50">
         <Header
           onShowHowToPlay={() => setShowHowToPlay(true)}
           onShowStats={() => setShowStats(true)}
@@ -271,7 +271,7 @@ export default function WheatleGame() {
             href="https://bsky.app/profile/brittonhayes.dev"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-amber-600 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
+            className="text-black dark:text-white"
           >
             @brittonhayes.dev
           </a>
